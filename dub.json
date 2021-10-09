@@ -1,0 +1,58 @@
+{
+	"name": "serve-d",
+	"description": "Microsoft Language Server Protocol implementation using workspace-d",
+	"license": "MIT",
+	"copyright": "Copyright © 2017-2021, webfreak",
+	"dependencies": {
+		"workspace-d": "3.6.0-pre.15",
+		"eventsystem": "~>1.2.0",
+		"libddoc": "0.7.4",
+		"rm-rf": "~>0.1.0",
+		"diet-complete": "~>0.0.3",
+		"emsi_containers": "0.8.0",
+		"serve-d:http": "*",
+		"serve-d:lsp": "*",
+		"serve-d:serverbase": "*"
+	},
+	"stringImportPaths": [
+		"views"
+	],
+	"subPackages": [
+		"http",
+		"lsp",
+		"serverbase"
+	],
+	"versions-windows": ["RequestsSkipSSL"],
+	"configurations": [
+		{
+			"name": "executable",
+			"mainSourceFile": "source/app.d",
+			"targetType": "executable"
+		},
+		{
+			"name": "unittest",
+			"mainSourceFile": "source/app.d",
+			"dflags": ["-checkaction=context"],
+			"excludedSourceFiles": [
+				"source/app.d",
+				"source/served/info.d"
+			],
+			"dependencies": {
+				"silly": "~>1.1.1"
+			}
+		},
+		{
+			"name": "unittest-optimized",
+			"buildOptions": ["optimize", "debugInfo", "unittests"],
+			"mainSourceFile": "source/app.d",
+			"dflags": ["-checkaction=context"],
+			"excludedSourceFiles": [
+				"source/app.d",
+				"source/served/info.d"
+			],
+			"dependencies": {
+				"silly": "~>1.1.1"
+			}
+		}
+	]
+}

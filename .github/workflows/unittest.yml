@@ -1,0 +1,51 @@
+name: Run Unittests
+on: [push, pull_request]
+
+jobs:
+  dubtest:
+    name: Dub Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        dc: [dmd-latest, ldc-latest]
+        exclude:
+        - os: windows-latest
+          dc: dmd-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install D compiler
+        uses: dlang-community/setup-dlang@v1
+        with:
+          compiler: ${{ matrix.dc }}
+
+      - name: dub upgrade
+        uses: WebFreak001/dub-upgrade@v0.1.0
+
+      - name: LSP tests
+        run: dub test :lsp
+        env:
+          # shouldn't break other OSes
+          MACOSX_DEPLOYMENT_TARGET: '10.12'
+
+      - name: serverbase tests
+        run: dub test :serverbase
+        env:
+          MACOSX_DEPLOYMENT_TARGET: '10.12'
+
+      - name: build dummy server
+        run: dub build --root=null_server
+        env:
+          MACOSX_DEPLOYMENT_TARGET: '10.12'
+
+      - name: Run tests
+        run: dub test
+        env:
+          MACOSX_DEPLOYMENT_TARGET: '10.12'
+
+      - name: cache dependency binaries
+        uses: WebFreak001/dub-upgrade@v0.1.0
+        with:
+          store: true
